@@ -35,5 +35,10 @@
         }
       ]
     }
-  ]
+  ],
+  "functions": {
+    "api/plan.mjs": {
+      "maxDuration": 30
+    }
+  }
 }
