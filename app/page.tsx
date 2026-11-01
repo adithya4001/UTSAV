@@ -1,14 +1,264 @@
-'use client';
-import { ArrowRight, ArrowUpRight, Flower2, ShieldCheck, Users, Wallet, ClipboardCheck, Sparkles, CalendarDays, LockKeyhole, Sun, Moon } from 'lucide-react';
-import { useEffect, useState } from 'react';
-import StageArt from '../components/StageArt';
-export default function Introduction() { const [theme, setTheme] = useState('light'); useEffect(() => { try {
-    const p = JSON.parse(localStorage.getItem('utsavops-appearance') || '{}');
-    if (p.theme === 'dark')
-        setTheme('dark');
+"use client";
+import {
+  ArrowRight,
+  ArrowUpRight,
+  Flower2,
+  ShieldCheck,
+  Users,
+  Wallet,
+  ClipboardCheck,
+  Sparkles,
+  CalendarDays,
+  LockKeyhole,
+  Sun,
+  Moon,
+} from "lucide-react";
+import { useEffect, useState } from "react";
+import { readAppearance } from "../lib/appearance";
+import StageArt from "../components/StageArt";
+export default function Introduction() {
+  const [theme, setTheme] = useState(() => readAppearance().theme);
+  useEffect(() => {
+    document.documentElement.dataset.theme = theme;
+  }, [theme]);
+  return (
+    <div className="public-intro">
+      <a className="skip" href="#intro">
+        Skip to content
+      </a>
+      <header className="intro-header">
+        <a href="/" className="wordmark">
+          <span className="logo-mark">
+            <Flower2 size={26} strokeWidth={1.4} />
+          </span>
+          utsav<span>ops</span>
+          <i>EVENT STUDIO</i>
+        </a>
+        <nav aria-label="Introduction navigation">
+          <a href="#how-it-works">How it works</a>
+          <a href="#built-for-you">For organisers</a>
+        </nav>
+        <div>
+          <button
+            className="icon-btn"
+            aria-label={`Switch to ${theme === "light" ? "dark" : "light"} theme`}
+            onClick={() => {
+              const next = theme === "light" ? "dark" : "light";
+              setTheme(next);
+              try {
+                const saved = JSON.parse(
+                  localStorage.getItem("utsavops-appearance") || "{}",
+                );
+                localStorage.setItem(
+                  "utsavops-appearance",
+                  JSON.stringify({ ...saved, theme: next }),
+                );
+              } catch {}
+            }}
+          >
+            {theme === "light" ? <Moon size={18} /> : <Sun size={18} />}
+          </button>
+          <a href="/login" className="intro-login">
+            Sign in
+          </a>
+          <a href="/register" className="btn primary small">
+            Get started
+            <ArrowUpRight size={14} />
+          </a>
+        </div>
+      </header>
+      <main id="intro">
+        <section className="intro-hero">
+          <div className="intro-hero-copy">
+            <span className="intro-kicker">
+              <span />
+              THE BACKSTAGE FOR YOUR NEXT BIG MOMENT
+            </span>
+            <h1>
+              Dream it beautifully.
+              <br />
+              <em>Deliver it together.</em>
+            </h1>
+            <p>
+              Your event vision, budgets and people—in one thoughtful organiser
+              studio. Bring clarity to every celebration, from the first client
+              brief to the final goodbye.
+            </p>
+            <div className="intro-ctas">
+              <a className="btn primary" href="/register">
+                Create your organiser account
+                <ArrowRight size={17} />
+              </a>
+              <a className="btn text" href="/login">
+                Already have a studio? Sign in
+                <ArrowUpRight size={15} />
+              </a>
+            </div>
+            <div className="intro-trust">
+              <ShieldCheck size={15} />
+              Browser-only demo. Human-approved decisions. Your expertise at the
+              centre.
+            </div>
+          </div>
+          <div className="intro-visual">
+            <div className="intro-visual-note">
+              A THOUSAND LITTLE DETAILS.
+              <br />
+              <b>One unforgettable occasion.</b>
+            </div>
+            <div className="intro-art-orbit" />
+            <StageArt type="Wedding" style="Contemporary" />
+            <div className="floating-note note-vision">
+              <Sparkles size={17} />
+              <div>
+                <small>THE VISION</small>
+                <b>Make it unmistakably theirs.</b>
+              </div>
+            </div>
+            <div className="floating-note note-people">
+              <Users size={17} />
+              <div>
+                <small>THE PEOPLE</small>
+                <b>Everyone knows their next move.</b>
+              </div>
+            </div>
+            <div className="visual-signature">
+              UTSAVOPS / THOUGHTFULLY ORCHESTRATED
+            </div>
+          </div>
+        </section>
+        <div className="occasion-ribbon">
+          <span>BUILT FOR REAL CELEBRATIONS</span>
+          <b>Weddings</b>
+          <i>✦</i>
+          <b>Birthdays</b>
+          <i>✦</i>
+          <b>Community occasions</b>
+          <span>ONE STUDIO. YOUR WAY.</span>
+        </div>
+        <section id="how-it-works" className="intro-method">
+          <div className="intro-section-heading">
+            <span className="eyebrow">A CLEARER WAY TO ORGANISE</span>
+            <h2>
+              From “what if”
+              <br />
+              to <em>“it’s happening.”</em>
+            </h2>
+            <p>
+              One ordered workflow keeps the creative vision connected to the
+              practical work.
+            </p>
+          </div>
+          <div className="intro-method-cards">
+            {[
+              {
+                n: "01",
+                title: "Understand the occasion",
+                text: "Start with the client, the venue, the budget and the details that make this celebration personal.",
+                icon: Sparkles,
+              },
+              {
+                n: "02",
+                title: "Bring the plan together",
+                text: "Shape the experience. Compare costs. Give every task a responsible person and a realistic timeline.",
+                icon: CalendarDays,
+              },
+              {
+                n: "03",
+                title: "Stay ready for change",
+                text: "Preview budget and schedule impact, approve the next move, and keep a clear record of decisions.",
+                icon: ClipboardCheck,
+              },
+            ].map(({ n, title, text, icon: Icon }) => (
+              <article key={n}>
+                <div>
+                  <span>{n}</span>
+                  <Icon size={23} strokeWidth={1.3} />
+                </div>
+                <h3>{title}</h3>
+                <p>{text}</p>
+              </article>
+            ))}
+          </div>
+        </section>
+        <section id="built-for-you" className="intro-promise">
+          <div>
+            <span className="eyebrow">YOUR EXPERTISE. A BETTER WORKSPACE.</span>
+            <h2>
+              You create the moments.
+              <br />
+              <em>We connect the moving parts.</em>
+            </h2>
+            <p>
+              Designed for event organisers who turn ideas into real
+              experiences. Your demo workspace opens after sign-in. Orders,
+              client briefs and budgets stay in this browser; use sample data.
+            </p>
+            <a href="/register" className="btn primary">
+              Start your studio
+              <ArrowRight size={17} />
+            </a>
+          </div>
+          <div className="promise-grid">
+            {[
+              [
+                Wallet,
+                "Clarity on costs",
+                "Budgets, quotes and payments in context.",
+              ],
+              [
+                Users,
+                "Clear ownership",
+                "Responsibilities and timelines that connect.",
+              ],
+              [
+                ShieldCheck,
+                "Decisions you control",
+                "Changes are reviewed before they are applied.",
+              ],
+              [
+                LockKeyhole,
+                "A local demo workspace",
+                "Browser-local profiles and sample event records.",
+              ],
+            ].map(([Icon, title, text]) => {
+              const I = Icon as typeof Wallet;
+              return (
+                <article key={title as string}>
+                  <I size={22} />
+                  <h3>{title as string}</h3>
+                  <p>{text as string}</p>
+                </article>
+              );
+            })}
+          </div>
+        </section>
+        <section className="intro-final">
+          <Flower2 size={31} />
+          <span className="eyebrow">YOUR NEXT CHAPTER STARTS HERE</span>
+          <h2>
+            Make room for
+            <br />
+            <em>something memorable.</em>
+          </h2>
+          <a href="/register" className="btn primary">
+            Create account
+            <ArrowRight size={17} />
+          </a>
+          <span>No ChatGPT account required.</span>
+        </section>
+      </main>
+      <footer className="intro-footer">
+        <a className="wordmark" href="/">
+          utsav<span>ops</span>
+        </a>
+        <p>For the people behind the celebration.</p>
+        <div>
+          <a href="/login">Sign in</a>
+          <a href="/register">Register</a>
+          <a href="/forgot-password">Account recovery</a>
+        </div>
+      </footer>
+    </div>
+  );
 }
-catch { } }, []); useEffect(() => { document.documentElement.dataset.theme = theme; }, [theme]); return <div className="public-intro"><a className="skip" href="#intro">Skip to content</a><header className="intro-header"><a href="/" className="wordmark"><span className="logo-mark"><Flower2 size={26} strokeWidth={1.4}/></span>utsav<span>ops</span><i>EVENT STUDIO</i></a><nav aria-label="Introduction navigation"><a href="#how-it-works">How it works</a><a href="#built-for-you">For organisers</a></nav><div><button className="icon-btn" aria-label={`Switch to ${theme === 'light' ? 'dark' : 'light'} theme`} onClick={() => { const next = theme === 'light' ? 'dark' : 'light'; setTheme(next); try {
-    const saved = JSON.parse(localStorage.getItem('utsavops-appearance') || '{}');
-    localStorage.setItem('utsavops-appearance', JSON.stringify({ ...saved, theme: next }));
-}
-catch { } }}>{theme === 'light' ? <Moon size={18}/> : <Sun size={18}/>}</button><a href="/login" className="intro-login">Sign in</a><a href="/register" className="btn primary small">Get started<ArrowUpRight size={14}/></a></div></header><main id="intro"><section className="intro-hero"><div className="intro-hero-copy"><span className="intro-kicker"><span />THE BACKSTAGE FOR YOUR NEXT BIG MOMENT</span><h1>Dream it beautifully.<br /><em>Deliver it together.</em></h1><p>Your event vision, budgets and people—in one thoughtful organiser studio. Bring clarity to every celebration, from the first client brief to the final goodbye.</p><div className="intro-ctas"><a className="btn primary" href="/register">Create your organiser account<ArrowRight size={17}/></a><a className="btn text" href="/login">Already have a studio? Sign in<ArrowUpRight size={15}/></a></div><div className="intro-trust"><ShieldCheck size={15}/>Browser-only demo. Human-approved decisions. Your expertise at the centre.</div></div><div className="intro-visual"><div className="intro-visual-note">A THOUSAND LITTLE DETAILS.<br /><b>One unforgettable occasion.</b></div><div className="intro-art-orbit"/><StageArt type="Wedding" style="Contemporary"/><div className="floating-note note-vision"><Sparkles size={17}/><div><small>THE VISION</small><b>Make it unmistakably theirs.</b></div></div><div className="floating-note note-people"><Users size={17}/><div><small>THE PEOPLE</small><b>Everyone knows their next move.</b></div></div><div className="visual-signature">UTSAVOPS / THOUGHTFULLY ORCHESTRATED</div></div></section><div className="occasion-ribbon"><span>BUILT FOR REAL CELEBRATIONS</span><b>Weddings</b><i>✦</i><b>Birthdays</b><i>✦</i><b>Community occasions</b><span>ONE STUDIO. YOUR WAY.</span></div><section id="how-it-works" className="intro-method"><div className="intro-section-heading"><span className="eyebrow">A CLEARER WAY TO ORGANISE</span><h2>From “what if”<br />to <em>“it’s happening.”</em></h2><p>One ordered workflow keeps the creative vision connected to the practical work.</p></div><div className="intro-method-cards">{[{ n: '01', title: 'Understand the occasion', text: 'Start with the client, the venue, the budget and the details that make this celebration personal.', icon: Sparkles }, { n: '02', title: 'Bring the plan together', text: 'Shape the experience. Compare costs. Give every task a responsible person and a realistic timeline.', icon: CalendarDays }, { n: '03', title: 'Stay ready for change', text: 'Preview budget and schedule impact, approve the next move, and keep a clear record of decisions.', icon: ClipboardCheck }].map(({ n, title, text, icon: Icon }) => <article key={n}><div><span>{n}</span><Icon size={23} strokeWidth={1.3}/></div><h3>{title}</h3><p>{text}</p></article>)}</div></section><section id="built-for-you" className="intro-promise"><div><span className="eyebrow">YOUR EXPERTISE. A BETTER WORKSPACE.</span><h2>You create the moments.<br /><em>We connect the moving parts.</em></h2><p>Designed for event organisers who turn ideas into real experiences. Your private workspace opens after sign-in—your orders, client briefs and budgets stay behind your account.</p><a href="/register" className="btn primary">Start your studio<ArrowRight size={17}/></a></div><div className="promise-grid">{[[Wallet, 'Clarity on costs', 'Budgets, quotes and payments in context.'], [Users, 'Clear ownership', 'Responsibilities and timelines that connect.'], [ShieldCheck, 'Decisions you control', 'Changes are reviewed before they are applied.'], [LockKeyhole, 'A private workspace', 'Account-scoped profiles and event records.']].map(([Icon, title, text]) => { const I = Icon as typeof Wallet; return <article key={title as string}><I size={22}/><h3>{title as string}</h3><p>{text as string}</p></article>; })}</div></section><section className="intro-final"><Flower2 size={31}/><span className="eyebrow">YOUR NEXT CHAPTER STARTS HERE</span><h2>Make room for<br /><em>something memorable.</em></h2><a href="/register" className="btn primary">Create account<ArrowRight size={17}/></a><span>No ChatGPT account required.</span></section></main><footer className="intro-footer"><a className="wordmark" href="/">utsav<span>ops</span></a><p>For the people behind the celebration.</p><div><a href="/login">Sign in</a><a href="/register">Register</a><a href="/forgot-password">Account recovery</a></div></footer></div>; }
