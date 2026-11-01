@@ -11,7 +11,11 @@
     "build": "node scripts/run-framework.mjs build",
     "start": "node --import ./scripts/sites-env.mjs ./node_modules/wrangler/bin/wrangler.js dev --config dist/server/wrangler.json --local --persist-to .wrangler/state --ip 127.0.0.1 --inspector-port 0",
     "lint": "eslint . --ignore-pattern dist --ignore-pattern .next",
-    "db:generate": "drizzle-kit generate"
+    "db:generate": "drizzle-kit generate",
+    "test": "node --test tests/*.test.mjs && node --experimental-strip-types --test tests/contracts.test.ts tests/auth-contracts.test.ts tests/demo-storage.test.ts tests/ai-state.test.ts",
+    "typecheck": "tsc --noEmit",
+    "build:demo": "vite build --config deployment/vercel/vite.config.mjs",
+    "lint:demo": "eslint --config eslint.demo.config.mjs app/page.tsx components/OrganiserStudio.tsx components/CreativePlanPanel.tsx components/BudgetPanel.tsx components/AuthScreen.tsx components/EventBrief.tsx components/Dialog.tsx components/Tutorial.tsx components/StageArt.tsx lib/demo-account.ts lib/demo-contracts.ts lib/domain-types.ts lib/appearance.ts lib/ai-state.ts lib/contracts.ts api/plan.mjs --max-warnings 0"
   },
   "dependencies": {
     "@base-ui/react": "^1.7.0",

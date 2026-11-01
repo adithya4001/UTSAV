@@ -167,20 +167,18 @@ Add the variables to the intended Production/Preview environments and deploy the
 
 ## Verification
 
-The repository includes tests for planning logic, calculations, proposals, approval behavior, dependencies and schema validation.
+The final quality update includes **66 automated tests** across planning, schemas, browser-local account storage, AI response handling and the actual API handler with mocked provider responses.
 
 ```bash
-node --test tests/*.test.mjs
-node --experimental-strip-types --test tests/contracts.test.ts tests/auth-contracts.test.ts
-pnpm exec tsc --noEmit
-pnpm exec vite build --config deployment/vercel/vite.config.mjs
+pnpm run lint:demo
+pnpm run typecheck
+pnpm test
+pnpm run build:demo
 ```
 
-The auth-contract tests cover the retained server-auth implementation; they are not evidence that browser-local demo access provides production authentication.
+The active demo has a zero-warning lint gate, a TypeScript check and a production build gate. [GitHub Actions](.github/workflows/quality.yml) repeats these checks for pushes and pull requests. See the [quality report](docs/QUALITY_REPORT.md) for the changes, test scope and verification limits.
 
-**Observed checks during development:** interface builds and TypeScript checks passed; domain/contract suites were run; demo registration/login and local persistence were checked programmatically; live AI errors were diagnosed and a successful refinement notification was supplied from the deployed app. Retry/provider-error handling was exercised with mocked responses.
-
-**Verification limits:** provider mocks are not an uptime test. No independent user study, measured customer savings, penetration test, cross-device sync guarantee or leaderboard prediction is claimed. Some older files in `docs/` describe earlier releases; use this README and the Vercel entry point for the current deployment's scope.
+The auth-contract tests cover the retained server-auth implementation; they do not make browser-local demo accounts production authentication. Provider mocks verify request/error handling, not live service uptime. No leaderboard score, measured customer savings or independent accessibility audit is claimed.
 
 ## Prototype boundaries
 
