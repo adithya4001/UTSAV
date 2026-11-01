@@ -1,0 +1,3 @@
+import { sqliteTable, text, integer } from 'drizzle-orm/sqlite-core';
+export const profiles = sqliteTable('organiser_profiles', { userId: text('user_id').primaryKey(), name: text('name').notNull(), company: text('company').notNull(), city: text('city').notNull(), specialty: text('specialty').notNull(), updatedAt: text('updated_at').notNull() });
+export const events = sqliteTable('organiser_events', { id: text('id').primaryKey(), userId: text('user_id').notNull(), state: text('state').notNull(), status: text('status').notNull(), revision: integer('revision').notNull(), updatedAt: text('updated_at').notNull() });

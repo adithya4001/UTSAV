@@ -1,0 +1,10 @@
+import test from 'node:test';import assert from 'node:assert/strict';
+import {briefSchema,profileSchema,stateSchema,orderStatus} from '../lib/contracts.ts';
+import {seed} from '../lib/engine.mjs';
+test('valid event state is accepted for server persistence',()=>assert.equal(stateSchema.safeParse(seed()).success,true));
+test('server contract rejects impossible calendar dates',()=>assert.equal(briefSchema.safeParse({...seed().brief,date:'2026-02-30'}).success,false));
+test('server contract rejects overpaid categories',()=>{const s=seed();s.items[0].paid=s.items[0].amount+1;assert.equal(stateSchema.safeParse(s).success,false)});
+test('server contract bounds task records',()=>{const s=seed();s.tasks[0].time='25:00';assert.equal(stateSchema.safeParse(s).success,false)});
+test('profile requires name, company and an allowed specialty',()=>{assert.equal(profileSchema.safeParse({name:'Maya',company:'Maya Events',city:'Pune',specialty:'All event types'}).success,true);assert.equal(profileSchema.safeParse({name:'',company:'',city:'',specialty:'admin'}).success,false)});
+test('order status cannot inject arbitrary database values',()=>assert.equal(orderStatus.safeParse('admin').success,false));
+test('brief start time rejects midnight-clipped preparations',()=>{assert.equal(briefSchema.safeParse({...seed().brief,start:'02:00'}).success,false);assert.equal(briefSchema.safeParse({...seed().brief,start:'18:00'}).success,true)});
