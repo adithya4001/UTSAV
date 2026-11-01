@@ -1,3 +1,4 @@
-export const createEventPlan:(b:any)=>any;
-export const creativeBlueprint:(b:any)=>any;
-export const nextAction:(s:any)=>string;
+import type { EventBriefData, EventState, Blueprint } from "./domain-types";
+export const createEventPlan: (b: EventBriefData) => EventState;
+export const creativeBlueprint: (b: EventBriefData) => Blueprint;
+export const nextAction: (s: EventState) => string;

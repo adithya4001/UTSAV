@@ -1,10 +1,125 @@
-import { z } from 'zod';
+import { z } from "zod";
 const bounded = z.string().max(2000);
-export const briefSchema = z.object({ name: z.string().trim().min(1).max(100), type: z.enum(['Wedding', 'Birthday', 'Community']), city: z.string().trim().min(1).max(100), date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).refine(x => !Number.isNaN(Date.parse(x)) && new Date(x).toISOString().slice(0, 10) === x, 'Invalid date'), guests: z.number().int().min(1).max(10000), budget: z.number().int().min(1000).max(100000000), preferences: bounded, venue: z.string().max(150).optional(), setting: z.enum(['Indoor', 'Outdoor', 'Mixed']).optional(), style: z.enum(['Heritage', 'Contemporary', 'Garden']).optional(), priority: z.enum(['Guest comfort', 'Food experience', 'Visual impact']).optional(), start: z.string().regex(/^([01]\d|2[01]):[0-5]\d$/).refine(x => x >= '04:00', 'Start time must be between 04:00 and 21:59').optional(), capacity: z.number().int().min(1).max(10000).optional() });
-const item = z.object({ id: z.string().max(100), name: z.string().max(100), amount: z.number().int().min(0).max(100000000), paid: z.number().int().min(0).max(100000000), perGuest: z.number().min(0).max(100000000), basis: z.enum(['Estimate', 'Illustrative quote', 'Confirmed quote']), vendor: z.string().max(100), status: z.enum(['Shortlisted', 'Quote received', 'Booking confirmed', 'Delivered']) }).refine(x => x.paid <= x.amount, 'Paid exceeds allocation');
-const task = z.object({ id: z.string().max(100), title: z.string().max(500), owner: z.string().max(100), time: z.string().regex(/^([01]\d|2[0-3]):[0-5]\d$/), duration: z.number().int().min(1).max(1440), status: z.enum(['Proposed', 'Accepted', 'In progress', 'Completed', 'Blocked']), depends: z.array(z.string().max(100)).max(50), category: z.string().max(100) });
-const blueprint = z.object({ theme: z.string().max(200), vision: z.string().max(3000), ideas: z.array(bounded).max(10), menu: z.array(bounded).max(10), questions: z.array(bounded).max(10), source: z.string().max(200) }).nullable();
-const proposal = z.object({ id: z.string().max(100), kind: z.enum(['guests', 'delay']), baseVersion: z.number().int().min(1), title: bounded, guests: z.number().int().min(1).max(10000).optional(), minutes: z.number().int().min(5).max(240).optional(), cost: z.number().finite(), status: z.enum(['Pending', 'Approved', 'Rejected']), reason: bounded, details: z.array(bounded).max(10), created: z.string().max(100) });
-export const stateSchema = z.object({ brief: briefSchema, items: z.array(item).min(1).max(30), tasks: z.array(task).min(1).max(200), blueprint, proposals: z.array(proposal).max(100), history: z.array(z.object({ id: z.string().max(100), title: bounded, version: z.number().int(), at: z.string().max(100), snapshot: z.string().max(200000), cost: z.number() })).max(30), version: z.number().int().min(1) });
-export const profileSchema = z.object({ name: z.string().trim().min(1).max(100), company: z.string().trim().min(1).max(100), city: z.string().max(100), specialty: z.enum(['Celebrations & weddings', 'Birthdays & private events', 'Community & cultural events', 'All event types']) });
-export const orderStatus = z.enum(['Enquiry', 'Confirmed', 'Planning', 'Live', 'Completed']);
+export const briefSchema = z.object({
+  name: z.string().trim().min(1).max(100),
+  type: z.enum(["Wedding", "Birthday", "Community"]),
+  city: z.string().trim().min(1).max(100),
+  date: z
+    .string()
+    .regex(/^\d{4}-\d{2}-\d{2}$/)
+    .refine(
+      (x) =>
+        !Number.isNaN(Date.parse(x)) &&
+        new Date(x).toISOString().slice(0, 10) === x,
+      "Invalid date",
+    ),
+  guests: z.number().int().min(1).max(10000),
+  budget: z.number().int().min(1000).max(100000000),
+  preferences: bounded,
+  venue: z.string().max(150).optional(),
+  setting: z.enum(["Indoor", "Outdoor", "Mixed"]).optional(),
+  style: z.enum(["Heritage", "Contemporary", "Garden"]).optional(),
+  priority: z
+    .enum(["Guest comfort", "Food experience", "Visual impact"])
+    .optional(),
+  start: z
+    .string()
+    .regex(/^([01]\d|2[01]):[0-5]\d$/)
+    .refine((x) => x >= "04:00", "Start time must be between 04:00 and 21:59")
+    .optional(),
+  capacity: z.number().int().min(1).max(10000).optional(),
+});
+const item = z
+  .object({
+    id: z.string().max(100),
+    name: z.string().max(100),
+    amount: z.number().int().min(0).max(100000000),
+    paid: z.number().int().min(0).max(100000000),
+    perGuest: z.number().min(0).max(100000000),
+    basis: z.enum(["Estimate", "Illustrative quote", "Confirmed quote"]),
+    vendor: z.string().max(100),
+    status: z.enum([
+      "Shortlisted",
+      "Quote received",
+      "Booking confirmed",
+      "Delivered",
+    ]),
+  })
+  .refine((x) => x.paid <= x.amount, "Paid exceeds allocation");
+const task = z.object({
+  id: z.string().max(100),
+  title: z.string().max(500),
+  owner: z.string().max(100),
+  time: z.string().regex(/^([01]\d|2[0-3]):[0-5]\d$/),
+  duration: z.number().int().min(1).max(1440),
+  status: z.enum([
+    "Proposed",
+    "Accepted",
+    "In progress",
+    "Completed",
+    "Blocked",
+  ]),
+  depends: z.array(z.string().max(100)).max(50),
+  category: z.string().max(100),
+});
+export const blueprintSchema = z
+  .object({
+    theme: z.string().max(200),
+    vision: z.string().max(3000),
+    ideas: z.array(bounded).max(10),
+    menu: z.array(bounded).max(10),
+    questions: z.array(bounded).max(10),
+    source: z.string().max(200),
+  })
+  .nullable();
+const proposal = z.object({
+  id: z.string().max(100),
+  kind: z.enum(["guests", "delay"]),
+  baseVersion: z.number().int().min(1),
+  title: bounded,
+  guests: z.number().int().min(1).max(10000).optional(),
+  minutes: z.number().int().min(5).max(240).optional(),
+  cost: z.number().finite(),
+  status: z.enum(["Pending", "Approved", "Rejected"]),
+  reason: bounded,
+  details: z.array(bounded).max(10),
+  created: z.string().max(100),
+});
+export const stateSchema = z.object({
+  brief: briefSchema,
+  items: z.array(item).min(1).max(30),
+  tasks: z.array(task).min(1).max(200),
+  blueprint: blueprintSchema,
+  proposals: z.array(proposal).max(100),
+  history: z
+    .array(
+      z.object({
+        id: z.string().max(100),
+        title: bounded,
+        version: z.number().int(),
+        at: z.string().max(100),
+        snapshot: z.string().max(200000),
+        cost: z.number(),
+      }),
+    )
+    .max(30),
+  version: z.number().int().min(1),
+});
+export const profileSchema = z.object({
+  name: z.string().trim().min(1).max(100),
+  company: z.string().trim().min(1).max(100),
+  city: z.string().max(100),
+  specialty: z.enum([
+    "Celebrations & weddings",
+    "Birthdays & private events",
+    "Community & cultural events",
+    "All event types",
+  ]),
+});
+export const orderStatus = z.enum([
+  "Enquiry",
+  "Confirmed",
+  "Planning",
+  "Live",
+  "Completed",
+]);
