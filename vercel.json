@@ -38,7 +38,7 @@
   ],
   "functions": {
     "api/plan.mjs": {
-      "maxDuration": 30
+      "maxDuration": 60
     }
   }
 }
